@@ -4,6 +4,7 @@
 以下是详细的讲解和学习这段代码的顺序逻辑，同时结合一些C++编程技巧和方法：
 */
 
+// make_shared()
 #include <memory>
 #include <unordered_map>
 using namespace std;
@@ -45,7 +46,39 @@ public:
     friend class LruCache<Key, Value>;
 };
 
+template<typename Key, typename Value>
+class LruCache
+{
+public:
 
+    // 用using取别名，简化后面的代码书写
+    using LruNodeType = LruNode(Key, Value);
+
+
+    // 1. 构造函数
+    LruCache(int capacity) : capacity_(capacity) {
+        initializeList();
+    }
+
+    ~LruCache() override = default;
+
+
+    void initializeList(){
+        // 创建首尾的虚拟节点
+        dummyHead_ = std::make_shared<LruNodeType>(Key(), Value());
+        dummyTail_ = std::make_shared<LruNodeType>(Key(), Value());
+
+
+    }
+
+
+private:
+    int capacity_;
+    std:shared_ptr<LruNodeType> dummyHead_;
+    std:shared_ptr<LruNodeType> dummyTail_;
+
+
+};
 
 
 

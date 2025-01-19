@@ -26,7 +26,6 @@ public:
     // 如果未命中，派生类可以选择抛出异常或返回默认值。
     virtual Value get(Key key) = 0;
 
-
 };
 
 } // namespace KameCache

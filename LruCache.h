@@ -50,13 +50,20 @@ public:
     size_t getAccessCount() const {return accessCount_;}
     void increaseAccessCount() {++accessCount_;}
 
-    friend class LruCache<Key, Value>;
+    // friend class LruCache<Key, Value>;
+    template <typename K, typename V>
+    friend class LruCache; // 修正 friend 声明
 };
 
 template<typename Key, typename Value>
 // 继承时，要传递递模板参数<>，这样基类能知道键值类型
 class LruCache : public KICachePolicy<Key, Value>
 {
+
+// 在main里，创建示例要这样：
+// // 创建一个容量为 3 的 LRU 缓存，Key 类型为 int，Value 类型为 std::string
+// LruCache<int, std::string> cache(3);
+
 public:
 
     // 用using取别名，简化后面的代码书写
@@ -92,7 +99,8 @@ public:
             updateExistingNode(it->second, value);
             return;
         }
-        
+
+        addNewNode(key, value);  // 如果key不存在，就add new
     }
 
     // 3. 获取数据

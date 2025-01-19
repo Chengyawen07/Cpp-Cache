@@ -1,36 +1,40 @@
 #include <iostream>
-#include "LruCache.h"
+#include "LruKCache.h" // 假设你的代码保存为 LruKCache.h
+
+// run:
+// g++ -std=c++17 -pthread main.cpp -o lruk_cache
+// ./lruk_cache
+
 
 int main() {
     using namespace KamaCache;
 
-    // 创建一个容量为 3 的 LRU 缓存
-    LruCache<int, std::string> cache(3);
+    // 创建一个 LRU-k 缓存
+    // 主缓存容量为 3，历史访问记录容量为 5，阈值 k = 2
+    LruKCache<int, std::string> cache(3, 5, 2);
 
-    // 缓存中现在有：[1: "One", 2: "Two", 3: "Three"]
+    // 插入一些数据
+    std::cout << "Inserting data into history list:" << std::endl;
     cache.put(1, "One");
-    std::cout << "Put Key 1 -> One" << std::endl;
-
     cache.put(2, "Two");
-    std::cout << "Put Key 2 -> Two" << std::endl;
-
     cache.put(3, "Three");
-    std::cout << "Put Key 3 -> Three" << std::endl;
 
+    // 访问数据，未达到阈值 k 的数据不会进入主缓存
+    std::cout << "\nAccessing data:" << std::endl;
+    std::cout << "Get key 1 -> " << cache.get(1) << std::endl; // 增加历史访问记录
+    std::cout << "Get key 1 again -> " << cache.get(1) << std::endl; // 达到阈值后进入主缓存
 
-    // 测试 Key 1
-    std::string value;
-    if (cache.get(1, value)) {
-        std::cout << "Key 1 -> " << value << std::endl;
-    } else {
-        std::cout << "Key 1 not found!" << std::endl;
-    }
+    // 插入更多数据，触发淘汰逻辑
+    std::cout << "\nInserting data into main cache (with threshold checks):" << std::endl;
+    cache.put(4, "Four");
+    cache.put(5, "Five");
 
-    // 插入key 4 （新的数据加入到链表右侧）
-    // 缓存容量已满（3 个），按照 LRU 策略，淘汰最久未使用的键 Key 2
-    // 缓存更新为：[3: "Three", 1: "One", 4: "Four"]
-    cache.put(4, "Four"); // Key 2 should be evicted
-    if (!cache.get(2, value)) std::cout << "Key 2 evicted!" << std::endl;
+    // 验证缓存状态
+    std::cout << "\nFinal cache state (direct access):" << std::endl;
+    std::cout << "Get key 1 -> " << cache.get(1) << std::endl; // Key 1 应该在主缓存中
+    std::cout << "Get key 4 -> " << cache.get(4) << std::endl; // Key 4 应该在主缓存中
+    std::cout << "Get key 2 -> " << cache.get(2) << std::endl; // Key 2 应该被淘汰
+    std::cout << "Get key 5 -> " << cache.get(5) << std::endl; // Key 5 应该在主缓存中
 
     return 0;
 }

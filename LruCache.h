@@ -61,8 +61,8 @@ class LruCache : public KICachePolicy<Key, Value>
 {
 
 // 在main里，创建示例要这样：
-// // 创建一个容量为 3 的 LRU 缓存，Key 类型为 int，Value 类型为 std::string
-// LruCache<int, std::string> cache(3);
+// 创建一个容量为 3 的 LRU 缓存，Key 类型为 int，Value 类型为 std::string
+// LruCache<int, std::string> cache(3);  括号里是构造函数里定义的capacity_
 
 public:
 

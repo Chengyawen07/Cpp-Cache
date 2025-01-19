@@ -1,7 +1,8 @@
+#pragma once
 
 /*
-这段代码实现了一个LRU缓存策略，并进行了多种优化，比如支持访问计数（LFU的基础）和分片以提升并发性能。
-以下是详细的讲解和学习这段代码的顺序逻辑，同时结合一些C++编程技巧和方法：
+链表头部（dummyHead_->next_）表示最久未使用的节点（老数据）。
+链表尾部（dummyTail_->prev_）表示最近访问的节点（新数据）。
 */
 
 // make_shared()
@@ -9,6 +10,10 @@
 #include <unordered_map>
 #include <mutex>
 #include <thread>
+
+#include "KICachePolicy.h"
+
+
 using namespace std;
 
 
@@ -49,7 +54,8 @@ public:
 };
 
 template<typename Key, typename Value>
-class LruCache
+// 继承时，要传递递模板参数<>，这样基类能知道键值类型
+class LruCache : public KICachePolicy<Key, Value>
 {
 public:
 

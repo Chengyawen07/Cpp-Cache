@@ -39,8 +39,8 @@ public:
     {}
 
     // 2. 提供必要的访问器： 为了确保成员变量的可读性
-    Key getKey() const {return key_};
-    Value getValue() const {return value_};
+    Key getKey() const {return key_;}
+    Value getValue() const {return value_;}
     void setValue(const Value& value) {value_ = value;}
     size_t getAccessCount() const {return accessCount_;}
     void increaseAccessCount() {++accessCount_;}
@@ -90,7 +90,7 @@ public:
     }
 
     // 3. 获取数据
-    bool get(Key key, Value value) override {
+    bool get(Key key, Value& value) override {
 
         // 1. 加锁保护共享资源（如 nodeMap_ 和链表）不被多个线程同时修改
         std::lock_guard<std::mutex> lock(mutex_);
@@ -121,8 +121,8 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         auto it = nodeMap_.find(key);
         if(it != nodeMap_.end()){
-            removeNode(it->second);
-            nodeMap_.erase(it);
+            removeNode(it->second); // 删除链表的node
+            nodeMap_.erase(it); // 删除哈希表的key
         }
 
     }
@@ -138,7 +138,7 @@ private:
     }
 
     // 作用是，插入一个新的Node，要更新Node到链表头部
-    void updateExistingNode(NodePtr node, ){
+    void updateExistingNode(NodePtr node, const Value& value){
         node->setValue(value);
         moveToMostRecent(node);
     }
@@ -149,6 +149,7 @@ private:
         if(nodeMap_.size() >= capacity_){
             evictLeastRecent(); //  删除掉最久远的（在Head）
         }
+        // 新增节点
         NodePtr newNode = std::make_shared<LruNodeType>(key, value);
         insertNode(newNode);  // 插入链表尾部
         nodeMap_[key] = newNode; //哈希表加入新节点
@@ -188,16 +189,14 @@ private:
         nodeMap_.erase(leastRecent->getKey());   // 从哈希表中删除
     }
 
-
-
 private:
     int capacity_;  
-    std::shared_ptr<LruNodeType> dummyHead_;
-    std::shared_ptr<LruNodeType> dummyTail_;
     std::mutex  mutex_;
+    // NodePtr = std::shared_ptr<LruNodeType>
+    NodePtr dummyHead_;
+    NodePtr dummyTail_;
     NodeMap nodeMap_; 
 };
-
 
 
 

@@ -90,30 +90,44 @@ public:
     }
 
     // 3. 获取数据
-    bool get(Key key, Value value){
+    bool get(Key key, Value value) override {
+
         // 1. 加锁保护共享资源（如 nodeMap_ 和链表）不被多个线程同时修改
         std::lock_guard<std::mutex> lock(mutex_);
+
         // 在哈希表 nodeMap_ 中查找键 key 是否存在，返回迭代器it
         auto it = nodeMap_.find(key);
+
         // 如果找到了key
         if (it != nodeMap_.end()) {
             moveToMostRecent(it->second); // 将节点移动到链表头部
             value = it->second->getValue(); // 通过引用参数返回值
             return true; // 返回成功
         }
-
+        return false;
 
     }
 
+    // 第二个get函数
+    Value get(Key key) override {
+        Value value{}; // 构造函数，设置初始，比如0或空字符串" "
+        get(key, value);
+        return value;
+    }
 
 
     // 4. 删除数据
-    void remove(){
+    void remove(Key key){
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = nodeMap_.find(key);
+        if(it != nodeMap_.end()){
+            removeNode(it->second);
+            nodeMap_.erase(it);
+        }
 
     }
 
-
-
+// 上述公共函数里，调用的一些具体删除操作，是写在Private函数里的
 private:
     void initializeList(){
         // 创建首尾的虚拟节点

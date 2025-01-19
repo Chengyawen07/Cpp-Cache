@@ -137,9 +137,61 @@ private:
         dummyTail_->prev_ = dummyHead_;
     }
 
+    // 作用是，插入一个新的Node，要更新Node到链表头部
+    void updateExistingNode(NodePtr node, ){
+        node->setValue(value);
+        moveToMostRecent(node);
+    }
+
+    // 添加新节点
+    void addNewNode(const Key& key, const Value& value){
+        // 1. 先检查缓存，如果缓存已满，就删除最久未使用的
+        if(nodeMap_.size() >= capacity_){
+            evictLeastRecent(); //  删除掉最久远的（在Head）
+        }
+        NodePtr newNode = std::make_shared<LruNodeType>(key, value);
+        insertNode(newNode);  // 插入链表尾部
+        nodeMap_[key] = newNode; //哈希表加入新节点
+    }
+
+
+    void moveToMostRecent(NodePtr node){
+        removeNode(node);  // 从链表中移除当前节点(先找到对应node，删除)
+        insertNode(node);  // 将节点插入到链表头部（再把这个node添加到尾部）
+    }
+
+    //removeNode 函数中的操作逻辑是 基于双向链表的，
+    // 删除节点时，必须同时更新 prev 和 next。
+    // A->next_ 指向 C
+    // C->prev_ 指向 A
+    void removeNode(NodePtr node) 
+    {
+        node->prev_->next_ = node->next_; // 前节点的 next 指针指向当前节点的后节点
+        node->next_->prev_ = node->prev_; // 后节点的 prev 指针指向当前节点的前节点
+    }
+
+
+    // 因为是双向链表，所以要操作两次
+    // 从尾部插入节点（尾部是新节点）
+    void insertNode(NodePtr node){
+        node->next_ = dummyTail_;
+        node->prev_ = dummyTail_->prev_;
+        dummyTail_->prev_->next_ = node;
+        dummyTail_->prev_ = node;
+    }
+
+    // 淘汰使用最少的node（头部是最少用的）
+    void evictLeastRecent() 
+    {
+        NodePtr leastRecent = dummyHead_->next_; // 最久未访问的数据是链表尾部的节点
+        removeNode(leastRecent);                 // 从链表中移除
+        nodeMap_.erase(leastRecent->getKey());   // 从哈希表中删除
+    }
+
+
 
 private:
-    int capacity_;
+    int capacity_;  
     std::shared_ptr<LruNodeType> dummyHead_;
     std::shared_ptr<LruNodeType> dummyTail_;
     std::mutex  mutex_;

@@ -100,10 +100,117 @@ public:
     friend class LfuCache; // 修正 friend 声明
 };
 
+
 // 2. LFU类
 template <typename Key, typename Value>
 class LfuCache : public KICachePolicy<Key, Value> {
-    // 实现 LFU 缓存的逻辑...
+
+// 实现 LFU 缓存的逻辑...
+public:
+    using Node = typename FreqList<Key, Value>::Node; // 定义频率链表 FreqList 中的节点类型
+    using NodePtr = std::shared_ptr<Node>; // 指向Node的指针
+    using NodeMap = std::unordered_map<Key, NodePtr>; // 定义哈希表，用于将键 Key 映射到对应的缓存节点
+
+    // 构造函数: 目的 为 LFU 缓存的运行提供初始化参数
+    KLfuCache(int capacity, int maxAverageNum = 10)
+    : capacity_(capacity),  // 初始化缓存容量
+    minFreq_(INT8_MAX),  // 初始化为一个极大值，用于追踪当前最小访问频次
+    maxAverageNum_(maxAverageNum),
+    curAverageNum_(0), 
+    curTotalNum_(0) // 分别用于管理和记录访问频次
+    {}
+
+    // 析构
+    ~LfuCache() override = default;
+
+    // Put: 将键值对存入缓存，如果键已存在，则更新对应值
+    void put(Key key, Value value) override {
+        // 1. 容量检查：如果容量为 0，直接返回。
+        // 2. 线程安全：使用 std::lock_guard<std::mutex> 对缓存操作加锁。
+        // 3. 查找键：如果存在，就调用getInternal 更新。如果不存在，就用putInternal 添加新缓存
+
+        if(capacity_ == 0){
+            return;
+        }
+
+        // 更新缓存值时，需要加锁
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = nodeMap_.find(key);
+
+        // 如果it不为空，说明找到了key值. 则更新key对应的值（也就是频率）
+        if(it != nodeMap_.end()){
+            //解释：it->second 的作用是访问哈希表 nodeMap_ 中，键对应的缓存节点指针 NodePtr
+            it->second->value = value;  
+            getInternal(it->second, value);
+            return;
+        }
+
+        putInternal(key, value);
+
+    }
+
+    // 用于直接判断键是否存在，并通过引用参数返回值。
+    bool get(Key key, Value& value) override {
+        // 思路：查找键 key 是否存在于缓存中
+        // 如果在，存入Value，更新频率，并返回true
+        // 如果不在，返回false
+        
+        std::lock_guard<std::mutex> lock(mutex_);
+        auto it = nodeMap_.find(key);
+        if(it != nodeMap_.end()){
+            getInternal(it->second, value);
+            return true;
+        }
+
+        return false;
+    }
+
+    // 通过键直接返回对应的值
+    Value get(Key key) override {
+        Value = value;
+        get(key, value);
+        return value;
+
+    }
+
+    // 清空缓存，回收资源
+    void purge(Key key) override {
+        // .clear() 是 C++中容器的清除函数，如map, set, string, vector, list 等
+        nodeMap_.clear(); // 清空键值对
+        freqToFreqList_.clear();  // 清空映射
+
+    }
+
+
+// 私有成员变量
+private:
+    int capacity_;
+    int minFreq_;  // 当前最小访问频次，用于找到需要淘汰的节点
+    int maxAverageNum_;
+    int curAverageNum_;
+    int curTotalNum_;
+    std::mutex mutex_;
+    NodeMap nodeMap_; //存储键到缓存节点的映射
+    // 存储 频率到频率链表的映射: key是访问频次，Value是指向一个 FreqList 对象的指针
+    std::unordered_map<int, FreqList<Key, Value>*> freqToFreqList_;
+    
+
+// 私有方法声明 
+private:
+    void putInternal(Key key, Value value); // 添加缓存
+    void getInternal(NodePtr node, Value& value); // 获取缓存
+    void kickOut(); // 移除缓存中的过期数据
+    void removeFromFreqList(NodePtr node); // 从频率列表中移除节点
+    void addToFreqList(NodePtr node); // 添加到频率列表
+    void addFreqNum(); // 增加平均访问等频率
+    void decreaseFreqNum(int num); // 减少平均访问等频率
+    void handleOverMaxAverageNum(); // 处理当前平均访问频率超过上限的情况
+    void updateMinFreq();
+
+
+
+
+
 };
 
 } // namespace KamaCache

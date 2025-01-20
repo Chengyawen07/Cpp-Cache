@@ -3,6 +3,7 @@
 /home/ubuntu/Cpp-Cache/build/CMakeFiles/rebuild_cache.dir
 /home/ubuntu/Cpp-Cache/build/test/CMakeFiles/test_LruCache.dir
 /home/ubuntu/Cpp-Cache/build/test/CMakeFiles/test_LruKCache.dir
+/home/ubuntu/Cpp-Cache/build/test/CMakeFiles/test_FreqList.dir
 /home/ubuntu/Cpp-Cache/build/test/CMakeFiles/test.dir
 /home/ubuntu/Cpp-Cache/build/test/CMakeFiles/edit_cache.dir
 /home/ubuntu/Cpp-Cache/build/test/CMakeFiles/rebuild_cache.dir

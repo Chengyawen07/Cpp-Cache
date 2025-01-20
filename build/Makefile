@@ -152,6 +152,19 @@ test_LruKCache/fast:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_LruKCache.dir/build.make test/CMakeFiles/test_LruKCache.dir/build
 .PHONY : test_LruKCache/fast
 
+#=============================================================================
+# Target rules for targets named test_FreqList
+
+# Build rule for target.
+test_FreqList: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_FreqList
+.PHONY : test_FreqList
+
+# fast build rule for target.
+test_FreqList/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/build
+.PHONY : test_FreqList/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -161,6 +174,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... test_FreqList"
 	@echo "... test_LruCache"
 	@echo "... test_LruKCache"
 .PHONY : help

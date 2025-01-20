@@ -154,6 +154,44 @@ test_LruKCache/fast:
 	cd /home/ubuntu/Cpp-Cache/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_LruKCache.dir/build.make test/CMakeFiles/test_LruKCache.dir/build
 .PHONY : test_LruKCache/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_FreqList.dir/rule:
+	cd /home/ubuntu/Cpp-Cache/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_FreqList.dir/rule
+.PHONY : test/CMakeFiles/test_FreqList.dir/rule
+
+# Convenience name for target.
+test_FreqList: test/CMakeFiles/test_FreqList.dir/rule
+.PHONY : test_FreqList
+
+# fast build rule for target.
+test_FreqList/fast:
+	cd /home/ubuntu/Cpp-Cache/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/build
+.PHONY : test_FreqList/fast
+
+test_FreqList.o: test_FreqList.cpp.o
+.PHONY : test_FreqList.o
+
+# target to build an object file
+test_FreqList.cpp.o:
+	cd /home/ubuntu/Cpp-Cache/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/test_FreqList.cpp.o
+.PHONY : test_FreqList.cpp.o
+
+test_FreqList.i: test_FreqList.cpp.i
+.PHONY : test_FreqList.i
+
+# target to preprocess a source file
+test_FreqList.cpp.i:
+	cd /home/ubuntu/Cpp-Cache/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/test_FreqList.cpp.i
+.PHONY : test_FreqList.cpp.i
+
+test_FreqList.s: test_FreqList.cpp.s
+.PHONY : test_FreqList.s
+
+# target to generate assembly for a file
+test_FreqList.cpp.s:
+	cd /home/ubuntu/Cpp-Cache/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/test_FreqList.cpp.s
+.PHONY : test_FreqList.cpp.s
+
 test_LruCache.o: test_LruCache.cpp.o
 .PHONY : test_LruCache.o
 
@@ -211,8 +249,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... test_FreqList"
 	@echo "... test_LruCache"
 	@echo "... test_LruKCache"
+	@echo "... test_FreqList.o"
+	@echo "... test_FreqList.i"
+	@echo "... test_FreqList.s"
 	@echo "... test_LruCache.o"
 	@echo "... test_LruCache.i"
 	@echo "... test_LruCache.s"

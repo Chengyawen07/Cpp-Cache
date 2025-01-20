@@ -15,3 +15,8 @@ add_test(NAME LruCacheTest COMMAND test_LruCache)
 add_executable(test_LruKCache test_LruKCache.cpp)
 target_link_libraries(test_LruKCache GTest::GTest GTest::Main pthread)
 add_test(NAME LruKCacheTest COMMAND test_LruKCache)
+
+# 3. 测试FreqList
+add_executable(test_FreqList test_FreqList.cpp)
+target_link_libraries(test_FreqList GTest::GTest GTest::Main pthread)
+add_test(NAME LfuFreqTest COMMAND test_FreqList)

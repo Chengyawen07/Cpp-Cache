@@ -1,54 +1,42 @@
 #include <iostream>
-#include "LruCache.h" // 假设你的代码保存为 LruCache.h
+#include "LfuCache.h" // 包含 FreqList 的头文件，路径根据实际情况调整
+
+using namespace KamaCache;
 
 int main() {
-    using namespace KamaCache;
+    // 创建一个频率列表，频率为1
+    FreqList<int, std::string> freqList(1);
 
-    // 创建一个容量为 3 的 LRU 缓存
-    LruCache<int, std::string> cache(3);
-
-    // 插入数据
-    std::cout << "=== Inserting Data ===" << std::endl;
-    cache.put(1, "One");
-    cache.put(2, "Two");
-    cache.put(3, "Three");
-
-    // 验证插入是否成功
-    std::string value;
-    if (cache.get(1, value)) {
-        std::cout << "Get key 1 -> " << value << std::endl; // 输出: Get key 1 -> One
+    // 检查链表是否为空
+    if (freqList.isEmpty()) {
+        std::cout << "Initial list is empty." << std::endl;
+    } else {
+        std::cout << "Initial list is not empty." << std::endl;
     }
 
-    if (cache.get(2, value)) {
-        std::cout << "Get key 2 -> " << value << std::endl; // 输出: Get key 2 -> Two
+    // 创建节点并添加到链表
+    auto node1 = std::make_shared<FreqList<int, std::string>::Node>(1, "Node1");
+    freqList.addNode(node1);
+
+    if (!freqList.isEmpty()) {
+        std::cout << "Node added successfully. List is no longer empty." << std::endl;
     }
 
-    // 插入更多数据，触发淘汰逻辑
-    std::cout << "\n=== Inserting More Data ===" << std::endl;
-    cache.put(4, "Four"); // 触发淘汰，Key 3 将被移除
-    if (!cache.get(3, value)) {
-        std::cout << "Key 3 evicted!" << std::endl; // 输出: Key 3 evicted!
+    // 检查链表中的第一个节点
+    auto firstNode = freqList.getFirstNode();
+    if (firstNode == node1) {
+        std::cout << "First node matches: key = " << firstNode->key
+                  << ", value = " << firstNode->value << std::endl;
+    } else {
+        std::cout << "Error: First node does not match expected node." << std::endl;
     }
 
-    if (cache.get(4, value)) {
-        std::cout << "Get key 4 -> " << value << std::endl; // 输出: Get key 4 -> Four
-    }
-
-    // 验证最近使用逻辑
-    std::cout << "\n=== Accessing Key 2 ===" << std::endl;
-    if (cache.get(2, value)) {
-        std::cout << "Get key 2 -> " << value << std::endl; // 输出: Get key 2 -> Two
-    }
-
-    // 再插入数据，触发淘汰逻辑
-    std::cout << "\n=== Inserting Key 5 ===" << std::endl;
-    cache.put(5, "Five"); // Key 1 将被淘汰
-    if (!cache.get(1, value)) {
-        std::cout << "Key 1 evicted!" << std::endl; // 输出: Key 1 evicted!
-    }
-
-    if (cache.get(5, value)) {
-        std::cout << "Get key 5 -> " << value << std::endl; // 输出: Get key 5 -> Five
+    // 删除节点
+    freqList.removeNode(node1);
+    if (freqList.isEmpty()) {
+        std::cout << "Node removed successfully. List is empty again." << std::endl;
+    } else {
+        std::cout << "Error: Node removal failed. List is not empty." << std::endl;
     }
 
     return 0;

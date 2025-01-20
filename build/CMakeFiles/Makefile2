@@ -80,6 +80,7 @@ clean: test/clean
 # Recursive "all" directory target.
 test/all: test/CMakeFiles/test_LruCache.dir/all
 test/all: test/CMakeFiles/test_LruKCache.dir/all
+test/all: test/CMakeFiles/test_FreqList.dir/all
 .PHONY : test/all
 
 # Recursive "preinstall" directory target.
@@ -89,6 +90,7 @@ test/preinstall:
 # Recursive "clean" directory target.
 test/clean: test/CMakeFiles/test_LruCache.dir/clean
 test/clean: test/CMakeFiles/test_LruKCache.dir/clean
+test/clean: test/CMakeFiles/test_FreqList.dir/clean
 .PHONY : test/clean
 
 #=============================================================================
@@ -98,7 +100,7 @@ test/clean: test/CMakeFiles/test_LruKCache.dir/clean
 test/CMakeFiles/test_LruCache.dir/all:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_LruCache.dir/build.make test/CMakeFiles/test_LruCache.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_LruCache.dir/build.make test/CMakeFiles/test_LruCache.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/Cpp-Cache/build/CMakeFiles --progress-num=1,2 "Built target test_LruCache"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/Cpp-Cache/build/CMakeFiles --progress-num=3,4 "Built target test_LruCache"
 .PHONY : test/CMakeFiles/test_LruCache.dir/all
 
 # Build rule for subdir invocation for target.
@@ -124,7 +126,7 @@ test/CMakeFiles/test_LruCache.dir/clean:
 test/CMakeFiles/test_LruKCache.dir/all:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_LruKCache.dir/build.make test/CMakeFiles/test_LruKCache.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_LruKCache.dir/build.make test/CMakeFiles/test_LruKCache.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/Cpp-Cache/build/CMakeFiles --progress-num=3,4 "Built target test_LruKCache"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/Cpp-Cache/build/CMakeFiles --progress-num=5,6 "Built target test_LruKCache"
 .PHONY : test/CMakeFiles/test_LruKCache.dir/all
 
 # Build rule for subdir invocation for target.
@@ -142,6 +144,32 @@ test_LruKCache: test/CMakeFiles/test_LruKCache.dir/rule
 test/CMakeFiles/test_LruKCache.dir/clean:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_LruKCache.dir/build.make test/CMakeFiles/test_LruKCache.dir/clean
 .PHONY : test/CMakeFiles/test_LruKCache.dir/clean
+
+#=============================================================================
+# Target rules for target test/CMakeFiles/test_FreqList.dir
+
+# All Build rule for target.
+test/CMakeFiles/test_FreqList.dir/all:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/depend
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/ubuntu/Cpp-Cache/build/CMakeFiles --progress-num=1,2 "Built target test_FreqList"
+.PHONY : test/CMakeFiles/test_FreqList.dir/all
+
+# Build rule for subdir invocation for target.
+test/CMakeFiles/test_FreqList.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/Cpp-Cache/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_FreqList.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ubuntu/Cpp-Cache/build/CMakeFiles 0
+.PHONY : test/CMakeFiles/test_FreqList.dir/rule
+
+# Convenience name for target.
+test_FreqList: test/CMakeFiles/test_FreqList.dir/rule
+.PHONY : test_FreqList
+
+# clean rule for target.
+test/CMakeFiles/test_FreqList.dir/clean:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_FreqList.dir/build.make test/CMakeFiles/test_FreqList.dir/clean
+.PHONY : test/CMakeFiles/test_FreqList.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

@@ -61,4 +61,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "test/CMakeFiles/test_LruCache.dir/DependInfo.cmake"
   "test/CMakeFiles/test_LruKCache.dir/DependInfo.cmake"
+  "test/CMakeFiles/test_FreqList.dir/DependInfo.cmake"
   )

@@ -24,12 +24,22 @@ public:
           k_(k) 
     {}
 
+    // 获取数据 (支持返回布尔值和传出参数)
+    bool get(Key key, Value& value) {
+        int historyCount = historyList_->get(key);
+        historyList_->put(key, ++historyCount);
+
+        // 调用基类的 get 函数
+        return LruCache<Key, Value>::get(key, value);
+    }
+
     // 从缓存中获取指定键 key 对应的值，并更新访问记录。
     Value get(Key key) {
         // 获取历史访问次数
         // historyList_ 是一个指向 LruCache<Key, size_t> 的智能指针。
         // 所以这个智能指针可以直接访问LruCache对象的函数 get
         int historyCount = historyList_->get(key);
+        std::cout << "Key " << key << " history access count: " << historyCount << "\n";
 
         // 更新历史访问记录的访问次数
         historyList_->put(key, ++historyCount);

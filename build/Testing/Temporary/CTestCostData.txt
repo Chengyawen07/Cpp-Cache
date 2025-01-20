@@ -1,0 +1,4 @@
+LruCacheTest 1 0.00334265
+LruKCacheTest 0 0
+---
+LruKCacheTest

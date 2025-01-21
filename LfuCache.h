@@ -208,9 +208,52 @@ private:
     void updateMinFreq();
 
 
-
-
-
 };
+
+// 处理 缓存读取（get） 操作：根据提供的 node，返回对应的 value
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::getInternal(NodePtr node, Value& value){
+
+    value = node->value;
+    removeFromFreqList(node);
+    node->freq++;
+    addToFreqList(node);
+    if (node->freq - 1 == minFreq_ && freqToFreqList_[node->freq - 1]->isEmpty())
+    minFreq_++;
+    addFreqNum();
+}
+
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::putInternal(Key key, Value value) {
+    if(nodeMap_.size() == capacity_){
+        // 如果缓存已满，调用 kickOut() 函数移除最不常访问的节点
+        kickOut();
+    }
+    // 构造新节点，包含 key 和 value，并将其加入缓存的 nodeMap_
+    NodePtr node = std::make_shared<Node>(key, value);
+    nodeMap_[key] = node;
+
+    addToFreqList(node);
+    addFreqNum();
+    // 对于新插入的节点，最小频率设置为 1
+    minFreq_ = std::min(minFreq_, 1);
+
+}
+
+// 当缓存满时，淘汰 最不常访问 的节点
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::kickOut() {
+    NodePtr node = freqToFreqList_[minFreq_]->getFirstNode();
+    
+
+
+}
+
+
+
+
+
+
+
 
 } // namespace KamaCache

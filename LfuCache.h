@@ -244,14 +244,22 @@ void LfuCache<Key, Value>::putInternal(Key key, Value value) {
 template<typename Key, typename Value>
 void LfuCache<Key, Value>::kickOut() {
     NodePtr node = freqToFreqList_[minFreq_]->getFirstNode();
-    
-
+    removeFromFreqList(node);
+    nodeMap_.erase(node->key);
+    decreaseFreqNum(node->freq);
 
 }
 
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::removeFromFreqList(NodePtr node)
+{
+    if(!node){
+        return;
+    }
 
-
-
+    auto freq = node->freq;
+    freqToFreqList_[freq]->removeNode(node);
+}
 
 
 

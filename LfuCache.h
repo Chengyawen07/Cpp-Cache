@@ -306,8 +306,50 @@ void LfuCache<Key, Value>::decreaseFreqNum(int num)
         curAverageNum_ = curTotalNum_ / nodeMap_.size();
 }
 
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::handleOverMaxAverageNum()
+{
+    if (nodeMap_.empty())
+        return;
+
+    // 当前平均访问频次已经超过了最大平均访问频次，所有结点的访问频次- (maxAverageNum_ / 2)
+    for (auto it = nodeMap_.begin(); it != nodeMap_.end(); ++it)
+    {
+        // 检查结点是否为空
+        if (!it->second)
+            continue;
+
+        NodePtr node = it->second;
+
+        // 先从当前频率列表中移除
+        removeFromFreqList(node);
+
+        // 减少频率
+        node->freq -= maxAverageNum_ / 2;
+        if (node->freq < 1) node->freq = 1;
+
+        // 添加到新的频率列表
+        addToFreqList(node);
+    }
+
+    // 更新最小频率
+    updateMinFreq();
+}
 
 
-
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::updateMinFreq() 
+{
+    minFreq_ = INT8_MAX;
+    for (const auto& pair : freqToFreqList_) 
+    {
+        if (pair.second && !pair.second->isEmpty()) 
+        {
+            minFreq_ = std::min(minFreq_, pair.first);
+        }
+    }
+    if (minFreq_ == INT8_MAX) 
+        minFreq_ = 1;
+}
 
 } // namespace KamaCache

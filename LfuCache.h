@@ -240,7 +240,7 @@ void LfuCache<Key, Value>::putInternal(Key key, Value value) {
 
 }
 
-// 当缓存满时，淘汰 最不常访问 的节点
+// 根据 minFreq_ 找到访问频率最低的节点并删除
 template<typename Key, typename Value>
 void LfuCache<Key, Value>::kickOut() {
     NodePtr node = freqToFreqList_[minFreq_]->getFirstNode();
@@ -260,6 +260,52 @@ void LfuCache<Key, Value>::removeFromFreqList(NodePtr node)
     auto freq = node->freq;
     freqToFreqList_[freq]->removeNode(node);
 }
+// 管理节点在访问频率链表中的添加和移除。
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::addToFreqList(NodePtr node)
+{
+    // 检查结点是否为空
+    if (!node) 
+        return;
+
+    // 添加进入相应的频次链表前需要判断该频次链表是否存在
+    auto freq = node->freq;
+    if (freqToFreqList_.find(node->freq) == freqToFreqList_.end())
+    {
+        // 不存在则创建
+        freqToFreqList_[node->freq] = new FreqList<Key, Value>(node->freq);
+    }
+
+    freqToFreqList_[freq]->addNode(node);
+}
+
+// 更新总访问频次和平均访问频次，用于统计和优化。
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::addFreqNum()
+{
+    curTotalNum_++;
+    if (nodeMap_.empty())
+        curAverageNum_ = 0;
+    else
+        curAverageNum_ = curTotalNum_ / nodeMap_.size();
+
+    if (curAverageNum_ > maxAverageNum_)
+    {
+       handleOverMaxAverageNum();
+    }
+}
+
+template<typename Key, typename Value>
+void LfuCache<Key, Value>::decreaseFreqNum(int num)
+{
+    // 减少平均访问频次和总访问频次
+    curTotalNum_ -= num;
+    if (nodeMap_.empty())
+        curAverageNum_ = 0;
+    else
+        curAverageNum_ = curTotalNum_ / nodeMap_.size();
+}
+
 
 
 

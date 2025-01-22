@@ -112,7 +112,7 @@ public:
     using NodeMap = std::unordered_map<Key, NodePtr>; // 定义哈希表，用于将键 Key 映射到对应的缓存节点
 
     // 构造函数: 目的 为 LFU 缓存的运行提供初始化参数
-    KLfuCache(int capacity, int maxAverageNum = 10)
+    LfuCache(int capacity, int maxAverageNum = 10)
     : capacity_(capacity),  // 初始化缓存容量
     minFreq_(INT8_MAX),  // 初始化为一个极大值，用于追踪当前最小访问频次
     maxAverageNum_(maxAverageNum),
@@ -167,14 +167,14 @@ public:
 
     // 通过键直接返回对应的值
     Value get(Key key) override {
-        Value = value;
+        Value value;
         get(key, value);
         return value;
 
     }
 
     // 清空缓存，回收资源
-    void purge(Key key) override {
+    void purge() {
         // .clear() 是 C++中容器的清除函数，如map, set, string, vector, list 等
         nodeMap_.clear(); // 清空键值对
         freqToFreqList_.clear();  // 清空映射

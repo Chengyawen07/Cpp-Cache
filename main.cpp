@@ -1,42 +1,59 @@
 #include <iostream>
-#include "LfuCache.h" // 包含 FreqList 的头文件，路径根据实际情况调整
+#include "LfuCache.h"
 
 using namespace KamaCache;
 
 int main() {
-    // 创建一个频率列表，频率为1
-    FreqList<int, std::string> freqList(1);
+    // 创建一个LfuCache，容量为3，最大平均访问频次为5
+    LfuCache<int, std::string> cache(3, 5);
 
-    // 检查链表是否为空
-    if (freqList.isEmpty()) {
-        std::cout << "Initial list is empty." << std::endl;
+    // 插入几个键值对
+    cache.put(1, "one");
+    cache.put(2, "two");
+    cache.put(3, "three");
+
+    // 测试get操作
+    std::string value;
+    if (cache.get(1, value)) {
+        std::cout << "Key 1: " << value << std::endl;
     } else {
-        std::cout << "Initial list is not empty." << std::endl;
+        std::cout << "Key 1 not found!" << std::endl;
     }
 
-    // 创建节点并添加到链表
-    auto node1 = std::make_shared<FreqList<int, std::string>::Node>(1, "Node1");
-    freqList.addNode(node1);
+    // 访问key 2两次，增加其访问频次
+    cache.get(2, value);
+    cache.get(2, value);
 
-    if (!freqList.isEmpty()) {
-        std::cout << "Node added successfully. List is no longer empty." << std::endl;
+    // 插入新的键值对，触发淘汰
+    cache.put(4, "four");
+
+    // 检查淘汰情况
+    if (cache.get(3, value)) {
+        std::cout << "Key 3: " << value << std::endl;
+    } else {
+        std::cout << "Key 3 not found (evicted)!" << std::endl;
     }
 
-    // 检查链表中的第一个节点
-    auto firstNode = freqList.getFirstNode();
-    if (firstNode == node1) {
-        std::cout << "First node matches: key = " << firstNode->key
-                  << ", value = " << firstNode->value << std::endl;
+    if (cache.get(4, value)) {
+        std::cout << "Key 4: " << value << std::endl;
     } else {
-        std::cout << "Error: First node does not match expected node." << std::endl;
+        std::cout << "Key 4 not found!" << std::endl;
     }
 
-    // 删除节点
-    freqList.removeNode(node1);
-    if (freqList.isEmpty()) {
-        std::cout << "Node removed successfully. List is empty again." << std::endl;
+    // 清空缓存
+    cache.purge();
+    std::cout << "Cache purged. Checking keys..." << std::endl;
+
+    if (cache.get(1, value)) {
+        std::cout << "Key 1: " << value << std::endl;
     } else {
-        std::cout << "Error: Node removal failed. List is not empty." << std::endl;
+        std::cout << "Key 1 not found!" << std::endl;
+    }
+
+    if (cache.get(4, value)) {
+        std::cout << "Key 4: " << value << std::endl;
+    } else {
+        std::cout << "Key 4 not found!" << std::endl;
     }
 
     return 0;

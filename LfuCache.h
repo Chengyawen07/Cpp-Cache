@@ -181,7 +181,6 @@ public:
 
     }
 
-
 // 私有成员变量
 private:
     int capacity_;
